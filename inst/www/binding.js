@@ -183,6 +183,13 @@ var dataframe = (function() {
         map.popups = new LayerStore(map);
         map.geojson = new LayerStore(map);
         
+        if(leafletOptions['disableZoom']){
+          map.dragging.disable();
+          map.touchZoom.disable();
+          map.doubleClickZoom.disable();
+          map.scrollWheelZoom.disable();
+        }
+        
         // When the map is clicked, send the coordinates back to the app
         map.on('click', function(e) {
           Shiny.onInputChange(id + '_click', {
