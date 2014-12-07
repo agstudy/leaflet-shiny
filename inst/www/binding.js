@@ -170,6 +170,8 @@ var dataframe = (function() {
         // structures, and hook up event handlers.
 
         var id = this.getId(el);
+        console.log('id is : '+ id);
+        
         var leafletOptions = JSON.parse(
           $el.children('script.leaflet-options').text()
         );
@@ -370,6 +372,44 @@ var dataframe = (function() {
         polygon.on('mouseout', mouseHandler(this.id, thisId, 'shape_mouseout'), this);
       }).call(this);
     }
+  };
+  
+  
+  methods.addControl = function(class,options){
+    var self = this;
+    if (options === null || typeof(options) === 'undefined' || options.length == 0) {
+      options = [null];
+    }
+    var ctrl = L.Control.extend({
+     initialize: function (foo, options) {
+        // ...
+        L.Util.setOptions(this, options);
+     },
+     onAdd: function (map) {
+        // create the control container with a particular class name
+        var container = L.DomUtil.create('div', class);
+        return container;
+      }
+    });
+    this.addControl(new ctrl());
+});
+
+map.addControl(new MyControl());
+
+    info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this.update();
+        return this._div;
+    };
+    
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (props) {
+        this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
+            '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+            : 'Hover over a state');
+    };
+  
+    info.addTo(map);
   };
 
   function mouseHandler(mapId, layerId, eventName, extraInfo) {
