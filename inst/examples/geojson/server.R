@@ -91,6 +91,29 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  
+  observe({
+    evt <- input$map_geojson_mouseover
+    if (is.null(evt))
+      return()
+    
+    isolate({
+       map$updateLegend(seattle_geojson$prop)
+      
+    })
+  })
+  
+  
+  observe({
+    evt <- input$map_geojson_mouseout
+    if (is.null(evt))
+      return()
+    
+    isolate({
+      map$updateLegend()
+      
+    })
+  })
   observe({
     evt <- input$map_geojson_click
     if (is.null(evt))

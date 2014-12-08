@@ -164,6 +164,7 @@ var dataframe = (function() {
     renderValue: function(el, data) {
       var $el = $(el);
       var map = $el.data('leaflet-map');
+        
       if (!map) {
 
         // A new map was detected. Create it, initialize supporting data
@@ -184,6 +185,8 @@ var dataframe = (function() {
         map.shapes = new LayerStore(map);
         map.popups = new LayerStore(map);
         map.geojson = new LayerStore(map);
+        map.controls = new LayerStore(map);
+       
         
         if(leafletOptions['disableZoom']){
           map.dragging.disable();
@@ -192,6 +195,43 @@ var dataframe = (function() {
           map.scrollWheelZoom.disable();
         }
         
+        if(leafletOptions['addlegend']){
+          
+          pos = {}
+          pos.position = leafletOptions['positionLegend'];
+          var grades = leafletOptions['gradesLegend'];
+          var colors = leafletOptions['colorsLegend'];
+          
+          var legend = L.control(pos);
+          legend.onAdd = function (map) {
+              var div = L.DomUtil.create('div', 'info legend')
+              for (var i = 0; i < grades.length; i++) {
+                  div.innerHTML +=
+                      '<i style="background:' + colors[i] + '"></i> ' +
+                      grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+              }
+          
+              return div;
+          };
+          legend.addTo(map);
+          
+          
+          var info = L.Control.extend({
+            options: {
+              position: 'topright'
+            },
+            onAdd: function (map) {
+              this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+              this.update();
+              return this._div;
+            },
+            update:function (props) {
+                  this._div.innerHTML = (props?'<h4>' + props.name +'</h4>':'');
+            }
+         });
+          map.info = new info();
+          map.addControl(map.info);
+        }
         // When the map is clicked, send the coordinates back to the app
         map.on('click', function(e) {
           Shiny.onInputChange(id + '_click', {
@@ -247,6 +287,14 @@ var dataframe = (function() {
     this.setView([lat, lng], zoom, forceReset);
   };
 
+
+  methods.updateLegend = function(data, layerId) {
+    console.log(this.info);
+    this.info.update(data);
+  };
+  
+ 
+  
   methods.addMarker = function(lat, lng, layerId, options, eachOptions) {
     var df = dataframe.create()
       .col('lat', lat)
@@ -374,43 +422,23 @@ var dataframe = (function() {
     }
   };
   
-  
-  methods.addControl = function(class,options){
-    var self = this;
+  methods.addControl  = function(){
+     console.debug('allo');
     if (options === null || typeof(options) === 'undefined' || options.length == 0) {
       options = [null];
     }
     var ctrl = L.Control.extend({
      initialize: function (foo, options) {
-        // ...
-        L.Util.setOptions(this, options);
+        L.Util.setOptions(this, { position: 'topright'});
      },
      onAdd: function (map) {
-        // create the control container with a particular class name
-        var container = L.DomUtil.create('div', class);
+        var container = L.DomUtil.create('div', 'info');
         return container;
       }
     });
     this.addControl(new ctrl());
-});
+   };
 
-map.addControl(new MyControl());
-
-    info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-        this.update();
-        return this._div;
-    };
-    
-    // method that we will use to update the control based on feature properties passed
-    info.update = function (props) {
-        this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
-            '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
-            : 'Hover over a state');
-    };
-  
-    info.addTo(map);
-  };
 
   function mouseHandler(mapId, layerId, eventName, extraInfo) {
     return function(e) {
@@ -448,6 +476,7 @@ map.addControl(new MyControl());
   
   methods.addGeoJSON = function(data, layerId) {
     var self = this;
+    
     if (typeof(data) === "string") {
       data = JSON.parse(data);
     }
