@@ -214,8 +214,6 @@ var dataframe = (function() {
               return div;
           };
           legend.addTo(map);
-          
-          
           var info = L.Control.extend({
             options: {
               position: 'topright'
@@ -226,7 +224,10 @@ var dataframe = (function() {
               return this._div;
             },
             update:function (props) {
-                  this._div.innerHTML = (props?'<h4>' + props.name +'</h4>':'');
+                  this._div.innerHTML = (props?
+                  '<h4>' + props.name +'</h4>' +
+                   '<b>' + props.score + '</b>'
+                  :'');
             }
          });
           map.info = new info();

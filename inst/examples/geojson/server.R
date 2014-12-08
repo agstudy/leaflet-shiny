@@ -96,7 +96,6 @@ shinyServer(function(input, output, session) {
     evt <- input$map_geojson_mouseover
     if (is.null(evt))
       return()
-    
     isolate({
        map$updateLegend(seattle_geojson$prop)
       
