@@ -8,6 +8,7 @@ shinyUI(fluidPage(
     zoom = 13,
     addlegend=TRUE,
     positionLegend ='bottomleft',
+    positionInfo ='topright',
     gradesLegend =c(0,10,100,1000),
     colorsLegend=colorRampPalette(c("blue", "red"))( 4 )
   )),

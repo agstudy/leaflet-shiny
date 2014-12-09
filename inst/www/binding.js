@@ -216,7 +216,7 @@ var dataframe = (function() {
           legend.addTo(map);
           var info = L.Control.extend({
             options: {
-              position: 'topright'
+              position: leafletOptions['positionInfo']
             },
             onAdd: function (map) {
               this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
@@ -227,7 +227,7 @@ var dataframe = (function() {
                   this._div.innerHTML = (props?
                   '<h4>' + props.name +'</h4>' +
                    '<b>' + props.score + '</b>'
-                  :'');
+                  :null);
             }
          });
           map.info = new info();
