@@ -233,10 +233,7 @@ var dataframe = (function() {
               return this._div;
             },
             update:function (props) {
-                  this._div.innerHTML = (props?
-                  '<h4>' + props.name +'</h4>' +
-                   '<b>' + props.score + '</b>'
-                  :null);
+                  this._div.innerHTML = (props?props:null);
             }
          });
           map.info = new info();

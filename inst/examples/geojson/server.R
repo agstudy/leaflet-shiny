@@ -97,7 +97,9 @@ shinyServer(function(input, output, session) {
     if (is.null(evt))
       return()
     isolate({
-       map$updateInfo(seattle_geojson$prop)
+       props = seattle_geojson$prop
+       info = HTML(paste(tags$h4(props$name),tags$b(props$population)))
+       map$updateInfo(info)
       
     })
   })
