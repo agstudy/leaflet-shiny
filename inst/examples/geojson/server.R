@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
     if (is.null(evt))
       return()
     isolate({
-       map$updateLegend(seattle_geojson$prop)
+       map$updateInfo(seattle_geojson$prop)
       
     })
   })
@@ -109,7 +109,7 @@ shinyServer(function(input, output, session) {
       return()
     
     isolate({
-      map$updateLegend()
+      map$updateInfo()
       
     })
   })
@@ -122,6 +122,10 @@ shinyServer(function(input, output, session) {
       # A GeoJSON feature was clicked. Save its properties
       # to selectedFeature.
       values$selectedFeature <- evt$properties
+      data = list(  grades = rnorm(5),
+      colors=colorRampPalette(c("blue", "red"))(5 ))
+      map$updateLegend(data)
+      
     })
   })
   

@@ -196,24 +196,33 @@ var dataframe = (function() {
         }
         
         if(leafletOptions['addlegend']){
+          var legend = L.Control.extend({
+            options: {
+              position: leafletOptions['positionLegend']
+            },
+            onAdd : function (map) {
+              this._div_legend = L.DomUtil.create('div', 'info legend');
+              var grades = leafletOptions['gradesLegend'],
+                  colors = leafletOptions['colorsLegend'];
           
-          pos = {}
-          pos.position = leafletOptions['positionLegend'];
-          var grades = leafletOptions['gradesLegend'];
-          var colors = leafletOptions['colorsLegend'];
-          
-          var legend = L.control(pos);
-          legend.onAdd = function (map) {
-              var div = L.DomUtil.create('div', 'info legend')
               for (var i = 0; i < grades.length; i++) {
-                  div.innerHTML +=
+                  this._div_legend.innerHTML +=
                       '<i style="background:' + colors[i] + '"></i> ' +
                       grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
               }
-          
-              return div;
-          };
-          legend.addTo(map);
+              return this._div_legend;
+          },
+          update : function(grades,colors){
+              this._div_legend.innerHTML =''
+              for (var i = 0; i < grades.length; i++) {
+                  this._div_legend.innerHTML +=
+                      '<i style="background:' + colors[i] + '"></i> ' +
+                      grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+              }
+          }
+          });
+          map.legend = new legend();
+          map.addControl(map.legend);
           var info = L.Control.extend({
             options: {
               position: leafletOptions['positionInfo']
@@ -291,8 +300,14 @@ var dataframe = (function() {
 
   methods.updateLegend = function(data, layerId) {
     console.log(this.info);
+    this.legend.update(data.grades,data.colors);
+  };
+  
+  methods.updateInfo = function(data, layerId) {
+    console.log(this.info);
     this.info.update(data);
   };
+  
   
  
   
