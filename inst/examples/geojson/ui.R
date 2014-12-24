@@ -6,11 +6,11 @@ shinyUI(fluidPage(
   leafletMap("map", 600, 400, options = list(
     center = c(47.6659641734893, -122.376078869215),
     zoom = 13,
-    addlegend=TRUE,
     positionLegend ='bottomleft',
-    positionInfo ='topright',
     gradesLegend =c(0,10,100,1000),
-    colorsLegend=colorRampPalette(c("blue", "red"))( 4 )
+    colorsLegend=colorRampPalette(c("blue", "red"))( 4 ),
+    addInfo=TRUE,
+    positionInfo ='topright'
   )),
   htmlOutput("details")
 ))

@@ -223,6 +223,8 @@ var dataframe = (function() {
           });
           map.legend = new legend();
           map.addControl(map.legend);
+        }
+        if(leafletOptions['addInfo']){
           var info = L.Control.extend({
             options: {
               position: leafletOptions['positionInfo']
